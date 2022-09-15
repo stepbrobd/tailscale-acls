@@ -1,0 +1,45 @@
+// Tailscale ACLs.
+{
+	// Tailscale groups.
+	"groups": {
+		"group:StepBroBD": ["Hi@StepBroBD.com"],
+	},
+	// Tailscale tags.
+	"tagOwners": {
+		"tag:internal": ["group:StepBroBD"],
+		"tag:external": ["group:StepBroBD"],
+		"tag:vpn":      ["group:StepBroBD"],
+	},
+	// Tailscale auto approvers.
+	"autoApprovers": {
+		// Auto approve all IPv4 and IPv6 routes.
+		"routes": {
+			"0.0.0.0/0": ["group:StepBroBD"],
+			"::/0":      ["group:StepBroBD"],
+		},
+		// Auto approve all exit nodes with tag:vpn.
+		"exitNode": ["tag:vpn"],
+	},
+	// Tailscale access rules.
+	"acls": [
+		// Users within Tailnet have full access.
+		{"action": "accept", "src": ["group:StepBroBD"], "dst": ["*:*"]},
+		// Machine with tag:internal can access whole Tailnet.
+		{"action": "accept", "src": ["tag:internal"], "dst": ["*:*"]},
+		// Machine with tag:external can access tag:external.
+		{"action": "accept", "src": ["tag:external"], "dst": ["tag:external:*"]},
+		// Users outside of Tailnet can access exit node.
+		{
+			"action": "accept",
+			"src":    ["autogroup:shared"],
+			"dst":    ["autogroup:internet:*"],
+		},
+	],
+	// ACL tests.
+	"tests": [
+		{
+			"src":    "group:StepBroBD",
+			"accept": ["tag:internal:22", "tag:external:22", "tag:vpn:41641"],
+		},
+	],
+}
