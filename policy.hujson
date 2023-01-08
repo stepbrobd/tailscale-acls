@@ -32,7 +32,7 @@
 		{
 			"action": "accept",
 			"src":    ["autogroup:shared"],
-			"dst":    ["autogroup:internet:*"],
+			"dst":    ["autogroup:internet"],
 		},
 	],
 	// ACL tests.
