@@ -28,20 +28,31 @@
 
 	// Access rules
 	"acls": [
-	    	// Allow group members to access their own devices
-    		{ "action": "accept", "src": ["autogroup:members"], "dst": ["autogroup:self:*"] },
-		
+		// Debug
+		{"action": "accept", "src": ["*"], "dst": ["*:*"]},
+	
+		// Allow group members to access their own devices
+		{
+			"action": "accept",
+			"src":    ["autogroup:members"],
+			"dst":    ["autogroup:self:*"],
+		},
+
 		// Allow group members to use exit nodes
-		{ "action": "accept", "src": ["autogroup:members"], "dst": ["autogroup:internet:*"] },
-		
+		{
+			"action": "accept",
+			"src":    ["autogroup:members"],
+			"dst":    ["autogroup:internet:*"],
+		},
+
 		// Users within StepBroBD have full access
-		{ "action": "accept", "src": ["group:StepBroBD"], "dst": ["*:*"] },
-		
+		{"action": "accept", "src": ["group:StepBroBD"], "dst": ["*:*"]},
+
 		// Machine with tag:internal can access whole Tailnet
-		{ "action": "accept", "src": ["tag:internal"], "dst": ["*:*"] },
-		
+		{"action": "accept", "src": ["tag:internal"], "dst": ["*:*"]},
+
 		// Machine with tag:external can access tag:external
-		{ "action": "accept", "src": ["tag:external"], "dst": ["tag:external:*"] },
+		{"action": "accept", "src": ["tag:external"], "dst": ["tag:external:*"]},
 	],
 
 	// ACL tests
