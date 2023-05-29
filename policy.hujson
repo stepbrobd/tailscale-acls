@@ -8,6 +8,8 @@
 	"tagOwners": {
 		"tag:internal": ["group:StepBroBD"],
 		"tag:external": ["group:StepBroBD"],
+		"tag:nas":      ["group:StepBroBD"],
+		"tag:server":   ["group:StepBroBD"],
 		"tag:vpn":      ["group:StepBroBD"],
 	},
 	// Tailscale auto approvers.
@@ -28,10 +30,10 @@
 		{"action": "accept", "src": ["tag:internal"], "dst": ["*:*"]},
 		// Machine with tag:external can access tag:external.
 		{"action": "accept", "src": ["tag:external"], "dst": ["tag:external:*"]},
-		// Users outside of Tailnet can access exit node.
+		// Allow group members to use exit nodes.
 		{
 			"action": "accept",
-			"src":    ["autogroup:shared"],
+			"src":    ["autogroup:members"],
 			"dst":    ["autogroup:internet:*"],
 		},
 	],
@@ -40,6 +42,22 @@
 		{
 			"src":    "group:StepBroBD",
 			"accept": ["tag:internal:22", "tag:external:22", "tag:vpn:41641"],
+		},
+	],
+	"ssh": [
+		// Admin access.
+		{
+			"action": "accept",
+			"src":    ["group:StepBroBD"],
+			"dst":    ["autogroup:self", "tag:internal", "tag:external", "tag:vpn"],
+			"users":  ["autogroup:nonroot", "root"],
+		},
+		// The default SSH policy, which lets users SSH into devices they own.
+		{
+			"action": "check",
+			"src":    ["autogroup:members"],
+			"dst":    ["autogroup:self"],
+			"users":  ["autogroup:nonroot", "root"],
 		},
 	],
 }
