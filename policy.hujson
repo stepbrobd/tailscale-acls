@@ -29,7 +29,7 @@
 	// Access rules
 	"acls": [
 		// Debug
-		{"action": "accept", "src": ["*"], "dst": ["*:*"]},
+		// {"action": "accept", "src": ["*"], "dst": ["*:*"]},
 	
 		// Allow group members to access their own devices
 		{
