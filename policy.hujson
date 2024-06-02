@@ -26,7 +26,12 @@
 		},
 		{
 			"action": "accept",
-			"src":    ["autogroup:members", "autogroup:shared"],
+			"src":    ["autogroup:members"],
+			"dst":    ["autogroup:internet:*"],
+		},
+		{
+			"action": "accept",
+			"src":    ["autogroup:shared"],
 			"dst":    ["autogroup:internet:*"],
 		},
 		{"action": "accept", "src": ["tag:internal"], "dst": ["*:*"]},
