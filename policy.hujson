@@ -1,60 +1,101 @@
 {
-	"groups": {
-		"group:owner": ["ysun@hey.com"],
-	},
 	"tagOwners": {
-		"tag:internal": ["group:owner"],
-		"tag:external": ["group:owner"],
+		"tag:golink": ["autogroup:admin"],
+		"tag:router": ["autogroup:admin"],
+		"tag:server": ["autogroup:admin"],
 	},
-	"nodeAttrs": [
-		{"target": ["*"], "attr": ["nextdns:d8664a"]},
-		{"target": ["group:owner"], "attr": ["mullvad"]},
-		{"target": ["autogroup:members"], "attr": ["funnel"]},
+
+	"grants": [
+		{
+			"src": ["autogroup:member"],
+			"dst": ["tag:golink"],
+			"app": {"tailscale.com/cap/golink": [{"admin": true}]},
+		},
 	],
-	"autoApprovers": {
-		"routes": {
-			"0.0.0.0/0": ["group:owner"],
-			"::/0":      ["group:owner"],
-		},
-	},
+
 	"acls": [
-		{"action": "accept", "src": ["group:owner"], "dst": ["*:*"]},
 		{
 			"action": "accept",
-			"src":    ["autogroup:members"],
-			"dst":    ["autogroup:self:*"],
+			"src":    ["autogroup:admin"],
+			"dst":    ["*:*"],
 		},
 		{
 			"action": "accept",
-			"src":    ["autogroup:members"],
-			"dst":    ["autogroup:internet:*"],
+			"src":    ["autogroup:member"],
+			"dst":    ["autogroup:self:*", "autogroup:internet:*"],
 		},
 		{
 			"action": "accept",
 			"src":    ["autogroup:shared"],
 			"dst":    ["autogroup:internet:*"],
 		},
-		{"action": "accept", "src": ["tag:internal"], "dst": ["*:*"]},
-		{"action": "accept", "src": ["tag:external"], "dst": ["tag:external:*"]},
+		{
+			"action": "accept",
+			"src":    ["tag:server"],
+			"dst":    ["tag:golink:*", "tag:server:*"],
+		},
+		{
+			"action": "accept",
+			"src": [
+				"tag:router",
+				"tag:server",
+				"23.161.104.0/24",
+				"2620:be:a000::/48",
+			],
+			"dst": [
+				"tag:router:*",
+				"tag:server:*",
+				"23.161.104.0/24:*",
+				"2620:be:a000::/48:*",
+			],
+		},
 	],
+
 	"ssh": [
 		{
 			"action": "accept",
-			"src":    ["group:owner"],
-			"dst":    ["autogroup:self", "tag:internal", "tag:external"],
+			"src":    ["autogroup:admin"],
+			"dst":    ["autogroup:self", "tag:router", "tag:server"],
 			"users":  ["autogroup:nonroot", "root"],
 		},
 		{
-			"action": "check",
-			"src":    ["autogroup:members"],
+			"action": "accept",
+			"src":    ["autogroup:member"],
 			"dst":    ["autogroup:self"],
-			"users":  ["autogroup:nonroot"],
+			"users":  ["autogroup:nonroot", "root"],
 		},
 	],
+
+	"autoApprovers": {
+		"exitNode": ["tag:router", "tag:server"],
+		"routes": {
+			"23.161.104.0/24":   ["tag:router", "tag:server"],
+			"2620:be:a000::/48": ["tag:router", "tag:server"],
+		},
+	},
+
+	"nodeAttrs": [
+		{"target": ["*"], "attr": ["funnel", "nextdns:d8664a"]},
+		{"target": ["autogroup:member"], "attr": ["funnel", "mullvad"]},
+	],
+
 	"tests": [
 		{
-			"src":    "group:owner",
-			"accept": ["tag:internal:22", "tag:external:22"],
+			"src":   "tag:router",
+			"proto": "tcp",
+			"accept": [
+				"23.161.104.128:179",
+				"23.161.104.129:179",
+				"23.161.104.130:179",
+			],
+		},
+	],
+
+	"sshTests": [
+		{
+			"src":    "ysun@hey.com",
+			"dst":    ["tag:router", "tag:server"],
+			"accept": ["ysun"],
 		},
 	],
 }
