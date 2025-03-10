@@ -39,12 +39,16 @@
 			"src": [
 				"tag:router",
 				"tag:server",
+				"100.64.0.0/10",
+				"fd7a:115c:a1e0::/48",
 				"23.161.104.0/24",
 				"2620:be:a000::/48",
 			],
 			"dst": [
 				"tag:router:*",
 				"tag:server:*",
+				"100.64.0.0/10:*",
+				"fd7a:115c:a1e0::/48:*",
 				"23.161.104.0/24:*",
 				"2620:be:a000::/48:*",
 			],
@@ -76,7 +80,11 @@
 
 	"nodeAttrs": [
 		{"target": ["*"], "attr": ["funnel", "nextdns:d8664a"]},
-		{"target": ["autogroup:member"], "attr": ["funnel", "mullvad"]},
+		{"target": ["ysun@hey.com"], "attr": ["mullvad"]},
+		{"target": ["tag:router"], "ipPool": ["100.100.20.0/24"]},
+		{"target": ["tag:server"], "ipPool": ["100.100.30.0/24"]},
+		{"target": ["tag:golink"], "ipPool": ["100.100.40.0/24"]},
+		{"target": ["ysun@hey.com"], "ipPool": ["100.100.50.0/24"]},
 	],
 
 	"tests": [
@@ -94,7 +102,7 @@
 	"sshTests": [
 		{
 			"src":    "ysun@hey.com",
-			"dst":    ["tag:router", "tag:server"],
+			"dst":    ["tag:server"],
 			"accept": ["ysun"],
 		},
 	],
